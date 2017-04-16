@@ -1,0 +1,11 @@
+#!/bin/bash
+
+PARAM=$@
+for ((i=201;i<=205;i++)); do
+echo "----------执行$PARAM 在主机h$i"
+  ssh h$i "$PARAM"
+  if [ $? = 0  ]; then
+    echo 命令已成功执行!----------
+  fi
+  echo ;
+done

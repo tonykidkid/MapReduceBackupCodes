@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [[ $# -lt 1 ]] ; then echo no params ; exit ; fi
+
+p=$1
+#echo p=$p
+dir=`dirname $p`
+#echo dir=$dir
+filename=`basename $p`
+#echo filename=$filename
+cd $dir
+fullpath=`pwd -P .`
+#echo fullpath=$fullpath
+
+user=`whoami`
+for (( i = 202 ; i <= 205 ; i = $i + 1 )) ; do
+   echo ======= doing rsync to: h$i:$fullpath
+   rsync -lr $p ${user}@h$i:$fullpath 
+   if [ $? -eq 0 ]; then
+     echo Successfully rsync to h$i======
+   fi
+done ;
