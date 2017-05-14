@@ -1,0 +1,125 @@
+﻿
+	yield关键字用来定义生成器（Generator），其具体功能是可以当return使用，从函数里返回一个值.
+【yield的代码迭代能力，能打断函数执行，还能记下断点处的数据】
+某个函数使用yield返回后，调用者实际得到的是一个迭代器对象，迭代器的值就是返回值。而调用该迭代器的next()方法会导致该函数恢复yield语句的执行环境继续往下跑，直到遇到下一个yield为止，如果遇不到yield，就会抛出异常表示迭代结束。看一个例子：
+>>> def han():
+... 	print "da yin"
+... 	yield 5
+... 	print "da yin2"
+... 
+>>> m=han()	#调用者实际得到的是一个迭代器对象
+>>> print m	#迭代器的值就是返回值
+<generator object han at 0x10f8780>
+>>> m.next()	#调用此iterator的next()使函数运行,遇yield停止并返回5
+da yin
+5
+>>> m.next()  #从断点5处继续运行,直到遇下一个yield才停,遇不到则抛异常
+da yin2
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+StopIteration
+
+----------------
+yield的工作原理：
+函数han()被调用后并没有执行,因为它有yield表达式，所以我们通过next()语句让它执行。next()语句将恢复Generator执行，并直到下一个yield表达式处。
+
+---------------
+再来看另外一个非常重要的函数send(msg)。其实next()和send()在一定意义上作用是相似的（c.next()和c.send(None)作用是一样的），二者区别是send()可以传递yield表达式的值进去，而next()不能传递特定的值(只能传递None进去).
+
+>>> def h():
+	print "WenChuan"
+	m = yield 5
+	print m
+	d = yield 12
+ 	print "we are together!"
+
+>>> c=h()
+>>> m = c.next()    #让函数运行，在首个yield停止并返回5(未打印)存到m
+WenChuan
+>>> d = c.send('fight')	#再次用send(msg)方法使函数继续运行并成功传值
+fight
+>>> print 'the date',m,'-',d
+the date 5 - 12
+
+
+-----------------
+>>> def h():
+	print 'wenChuan'
+	m = yield 5
+	print m
+	d = yield 12
+	print 'we are together'
+
+	
+>>> c=h()
+>>> s=c.send(None)
+wenChuan
+>>> print s
+5
+>>> 
+>>> w=c.send('beat it!')
+beat it!
+>>> print w
+12
+>>> print "the earthquark data was",s,'/',w;
+the earthquark data was 5 / 12
+>>> s,w
+(5, 12)
+>>> print s,w
+5 12
+>>> s;w;
+5
+12
+>>> w.next()
+
+Traceback (most recent call last):
+  File "<pyshell#38>", line 1, in <module>
+    w.next()
+AttributeError: 'int' object has no attribute 'next'
+>>> w.send(None)
+
+Traceback (most recent call last):
+  File "<pyshell#39>", line 1, in <module>
+    w.send(None)
+AttributeError: 'int' object has no attribute 'send'
+>>> 
+-------------
+
+>>> def test():
+	print "\tbefore 1st 'yield'"
+	y=yield 3
+	print y
+	z=yield 12
+	print z
+	print "after 2nd 'yield',before 3rd 'yield'"
+	p=yield "YIELD"
+	print p
+	print "after the 3rd yield"
+
+	
+>>> a1=test()
+>>> mA=a1.send(None)
+	before 1st 'yield'
+>>> mA; print mA
+3
+3
+>>> mB=a1.send('1st sent')
+1st sent
+>>> mB; print mB
+12
+12
+>>> mC=a1.send('2nd sent')
+2nd sent
+after 2nd 'yield',before 3rd 'yield'
+>>> mC; print mC
+'YIELD'
+YIELD
+>>> mD=a1.send('3rd sent')
+3rd sent
+after the 3rd yield
+
+Traceback (most recent call last):
+  File "<pyshell#166>", line 1, in <module>
+    mD=a1.send('3rd sent')
+StopIteration
+>>> 
