@@ -1,0 +1,216 @@
+﻿WHILE-loop	while循环
+满足条件者持续循环，boolean value通过条件表达式获取，若为True则执行while代码块中的语句，若为False则不执行。
+
+>>> def whileTest():
+	while True:
+		print "Begin"
+		x=raw_input('Please input your command. q for quit:')
+		if x.upper()=='Q':
+			break
+
+		
+>>> whileTest
+<function whileTest at 0x0295E770>
+>>> whileTest()
+Begin
+Please input your command. q for quit:haha
+Begin
+Please input your command. q for quit:Quit
+Begin
+Please input your command. q for quit:quit
+Begin
+Please input your command. q for quit:q
+>>> 
+
+>>> def test2():		#定义一个函数
+	choice_desc={'A':"You are an Ace grade guy!",'B':"You are an excellent guy!",'C':"You are a nice guy.",'D':"You are a little bit bad guy...That's my personal thought. Pls don't mind."}
+	tp=choice_desc.keys()	#to list all keys
+	Letters=tuple(tp)	#transform list to tuple
+	userInput=raw_input('Please make a choice:\n\tA\n\tB\n\tC\n\tD\n')			#获取用户的输入(即字母)
+	chosen=userInput.upper()		#强行变成大写字母
+	while chosen=='A' or chosen=='B' or chosen=='C' or chosen=='D':
+		print choice_desc.get(chosen)	#通过键取值
+		break
+	else:
+		user_input
+
+		
+>>> test2()		#用户调用(即运行)函数
+Please make a choice:
+	A
+	B
+	C
+	D
+b			#这是用户输入的
+You are an excellent guy!
+
+--------------------------------------------
+【改进后的代码，优化了while的条件表达式】
+>>> def test2():
+	choice_desc={'A':"You are an Ace grade guy!",'B':"You are an excellent guy!",'C':"You are a nice guy.",'D':"You are a little bit bad guy...That's my personal thought. Pls don't mind."}
+	keys=choice_desc.keys()	#to list all keys
+	Letters=tuple(keys)	#transform list to tuple
+	userInput=raw_input('Please make a choice:\n\tA\n\tB\n\tC\n\tD\n')
+	chosen=userInput.upper()
+	while chosen in Letters:
+		print choice_desc.get(chosen)  #须有print否则不显示
+		break
+	else:
+		userInput		#这条语句有卵用！
+>>> test2()
+Please make a choice:
+	A
+	B
+	C
+	D
+c
+You are a nice guy.
+>>> test2()
+Please make a choice:
+	A
+	B
+	C
+	D
+M			#因为M不属于元组里面的元素
+
+--------------------------------------------
+【再改进；用户输入的字母不在元组里面的时候，提示用户重试】
+>>> def test2():
+	choice_desc={'A':"You are an Ace grade guy!",'B':"You are an excellent guy!",'C':"You are a nice guy.",'D':"You are a little bit bad guy...That's my personal thought. Pls don't mind."}
+	keys=choice_desc.keys()	#to list all keys
+	Letters=tuple(keys)	#transform list to tuple
+	userInput=raw_input('Please make a choice:\n\tA\n\tB\n\tC\n\tD\n')
+	chosen=userInput.upper()
+	while chosen in Letters:
+		print choice_desc.get(chosen)
+	else:
+		print 'pls try again.'
+
+		
+>>> test2()
+Please make a choice:
+	A
+	B
+	C
+	D
+M
+pls try again.
+
+--------------------------------------------
+【第三次改进；每次输错,则每次提示用户重新输入,直到输入合规的字母】
+>>> def test2():
+	choice_desc={'A':"You are an Ace grade guy!",'B':"You are an excellent guy!",'C':"You are a nice guy.",'D':"You are a little bit bad guy...That's my personal thought. Pls don't mind."}
+	userInput=raw_input('Please make a choice:\n\tA\n\tB\n\tC\n\tD\n')
+	chosen=userInput.upper()
+	Letters=choice_desc.keys()
+	while 1!=2:			#条件表达式也可换成True
+		if chosen in Letters:
+			print choice_desc.get(chosen)
+			break
+		else:
+			userInput=raw_input('Please make a choice:\n\tA\n\tB\n\tC\n\tD\n')
+			chosen=userInput.upper()
+
+			
+>>> test2()
+Please make a choice:
+	A
+	B
+	C
+	D
+2
+Please make a choice:
+	A
+	B
+	C
+	D
+40.25
+Please make a choice:
+	A
+	B
+	C
+	D
+hELLO
+Please make a choice:
+	A
+	B
+	C
+	D
+W
+Please make a choice:
+	A
+	B
+	C
+	D
+a
+You are an Ace grade guy!
+
+-----------------------------------------------
+【继续上面的例子：
+提示用户输入命令，
+当输入的内容不是字母q时打印hello，若是q则打印一段话后程序自动终止；
+如果刚才输入的内容不是q，但它是字母c，那么跳过当前循环同时进入下一轮循环】
+>>> def test1():
+	x=''
+	while x!='q':
+		print "hello!"
+		x=raw_input("Please input command. Q for quit.").lower()
+		if x == 'c':
+			continue
+		print 'last letter was not c'
+	else:
+		print 'This while-loop is terminated.'
+
+		
+>>> test1()
+hello!
+Please input command. Q for quit.e
+last letter was not c
+hello!
+Please input command. Q for quit.d
+last letter was not c
+hello!
+Please input command. Q for quit.c
+hello!
+Please input command. Q for quit.Q
+last letter was not c
+This while-loop is terminated.
+>>> 
+
+———————————【课后练习】————————————
+【写一个程序，实现功能：
+获取用户输入，如果输入不是q，则提示用户继续输入；
+一直到输入q时退出程序，并告知用户这个程序结束】
+>>> def test1():
+	x=''
+	while x!='q':
+		x=raw_input("Please input command. Q for quit.").lower()
+	else:
+		print 'This while-loop is terminated.'
+
+		
+>>> test1()
+Please input command. Q for quit.    #用户连续输入3次空值(3次回车)
+Please input command. Q for quit.
+Please input command. Q for quit.
+Please input command. Q for quit.er
+Please input command. Q for quit.quit
+Please input command. Q for quit.Q
+This while-loop is terminated.
+
+
+【web编程练习——求和1! + 2! + 3! + ... + 10!】
+>>> # to calculate the result of 1!+2!+3!+...+10!\
+>>> # Step 1: work out each !
+>>> # Step 2: work out the Sum of each factorial
+>>> def SumOfFactorial():
+	R = []
+	U = 1
+	while U < 11:
+		result = reduce(lambda x,y: x*y, range(1,1+U))
+		R.append(result)
+		U += 1
+	return reduce(lambda j,k: j+k, R)
+
+>>> SumOfFactorial()
+4037913
