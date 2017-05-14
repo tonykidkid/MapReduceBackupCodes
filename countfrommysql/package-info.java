@@ -1,8 +1,0 @@
-/**
- * 
- */
-/**
- * @author tonykidkid
- *
- */
-package countfrommysql;
