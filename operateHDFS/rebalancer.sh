@@ -2,7 +2,11 @@
 
 # It does not allow to run more than 1 Balancer process at the same time on a same hdfs-cluster.
 count=0
+log_file=/tmp/balancer-10pct-out.log
 function my_balancer(){
+  if [ ! -f ${log_file} ]; then
+    touch ${log_file}
+  fi
   jps | grep Balancer 
   if [ $? -ne 0 ]; then
     echo "No other Balancer process, go on running this balancer job."
