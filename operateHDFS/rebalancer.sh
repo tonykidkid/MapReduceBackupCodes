@@ -3,9 +3,12 @@
 # It does not allow to run more than 1 Balancer process at the same time on a same hdfs-cluster.
 count=0
 log_file=/tmp/balancer-10pct-out.log
+err_outfile=/tmp/balancer-10pct-debug.log
 function my_balancer(){
   if [ ! -f ${log_file} ]; then
     touch ${log_file}
+  elif [ ! -f ${err_outfile}]; then
+    touch ${err_outfile}
   fi
   jps | grep Balancer 
   if [ $? -ne 0 ]; then
