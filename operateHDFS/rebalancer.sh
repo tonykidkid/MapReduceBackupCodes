@@ -4,6 +4,7 @@
 count=0
 log_file=/tmp/balancer-10pct-out.log
 err_outfile=/tmp/balancer-10pct-debug.log
+
 function my_balancer(){
   if [ ! -f ${log_file} ]; then
     touch ${log_file}
@@ -15,10 +16,10 @@ function my_balancer(){
   if [ $? -ne 0 ]; then
     echo "No other Balancer process, go on to run this balancer job"
     sudo -u hdfs nohup hdfs balancer -Ddfs.balancer.movedWinWidth=5400000 -Ddfs.balancer.moverThreads=800 -Ddfs.balancer.dispatcherThreads=200 -Ddfs.datanode.balance.bandwidthPerSec=100000000 -Ddfs.balancer.max-size-to-move=10737418240 -threshold 10 1>/tmp/balancer-10pct-out.log 2>/tmp/balancer-10pct-debug.log &
-    if [ $? -eq 0 ]; then
+    if [ $? -eq 0 ] && [ ${count} -lt 4 ]; then
       echo "successfully started running balancer as Daemon at" `date +'%Y-%m-%d_%H:%M:%S'`
       #count=$((${count}+1))  # TODO: to run next balancer loop, need to clean corresponding log then re-run.
-    else
+    elif [ $? -ne 0 ]; then
       echo "failed started balancer at" `date +'%Y-%m-%d_%H:%M:%S'`
     fi
   fi
@@ -27,15 +28,16 @@ function my_balancer(){
 # After running 5 rounds: normally exit without error.
 function quit_this_script(){
   if [ ${count} -eq 5 ]; then
+    echo "All Finished. Exit with code 0 at" `date +'%Y-%m-%d_%H:%M:%S'`
     exit 0  # to terminate currently running bash script.
   fi
 }
 
-# run the Balancer for 5 times one by one.
+# run the Balancer for 5 times one after one.
 my_balancer
 while (true); do
   echo "count number is =======> ${count}"
-  res=`grep "Balancing took" /tmp/balancer-10pct-out.log`
+  res=`grep "Balancing took" ${log_file}`
   if [[ ${res} =~ "Balancing took"  ]]; then
     echo "Current loop finished. Now starting next Balancer! Log file will be renewed."
     my_balancer
