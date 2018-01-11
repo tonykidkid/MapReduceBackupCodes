@@ -24,6 +24,7 @@ function my_balancer(){
   fi
 }
 
+# After running 5 rounds: normally exit without error.
 function quit_this_script(){
   if [ ${count} -eq 5 ]; then
     exit 0  # to terminate currently running bash script.
